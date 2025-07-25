@@ -9,9 +9,8 @@ interface QueryPageProps {
  * Handles routes like /queries/basic-find, /queries/aggregation, etc.
  */
 export default async function QueryPage({ params }: QueryPageProps) {
-  const { id } = await params;
-  
-  return <QueryDetail id={id} />;
+  // The QueryDetail component gets the id from useParams() internally
+  return <QueryDetail />;
 }
 
 /**

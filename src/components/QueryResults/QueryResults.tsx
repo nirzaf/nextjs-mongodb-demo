@@ -249,7 +249,7 @@ const QueryResults: React.FC<QueryResultsProps> = ({ result, loading }) => {
               />
               <Chip
                 icon={<DataIcon />}
-                label={`${result.metadata.count || 0} results`}
+                label={`${result.metadata.resultCount || 0} results`}
                 color="success"
                 variant="outlined"
               />
@@ -276,8 +276,8 @@ const QueryResults: React.FC<QueryResultsProps> = ({ result, loading }) => {
 
         <Box sx={{ p: 2 }}>
           <TabPanel value={tabValue} index={0}>
-            {Array.isArray(result.result) ? (
-              renderTableView(result.result)
+            {Array.isArray(result.data) ? (
+              renderTableView(result.data)
             ) : (
               <Typography variant="body2" color="text.secondary">
                 Table view is only available for array results.
@@ -286,7 +286,7 @@ const QueryResults: React.FC<QueryResultsProps> = ({ result, loading }) => {
           </TabPanel>
 
           <TabPanel value={tabValue} index={1}>
-            {renderJsonView(result.result)}
+            {renderJsonView(result.data)}
           </TabPanel>
         </Box>
       </Paper>

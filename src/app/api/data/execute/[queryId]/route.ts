@@ -17,13 +17,12 @@ async function executeQueryHandler(
 
   return NextResponse.json({
     success: true,
-    queryId,
-    parameters,
-    result: result.data,
+    data: result.data,
     metadata: {
+      queryId,
       executionTime: result.executionTime,
-      count: result.count,
-      timestamp: new Date().toISOString()
+      resultCount: result.count,
+      parameters
     }
   });
 }
