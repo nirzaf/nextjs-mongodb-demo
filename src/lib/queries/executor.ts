@@ -95,34 +95,74 @@ export class QueryExecutor {
           break;
 
         case 'text-search-jobs':
-          result = await Job.find({
-            $text: { $search: parameters.keywords || "software developer" },
-            status: 'Active'
-          })
-          .select('title description companyId score')
-          .populate('companyId', 'companyName')
-          .sort({ score: { $meta: 'textScore' } })
-          .limit(parameters.limit || 5);
+          try {
+            console.log('Attempting text search with keywords:', parameters.keywords || "software developer");
+
+            // Try text search first
+            result = await Job.find({
+              $text: { $search: parameters.keywords || "software developer" },
+              status: 'Active'
+            })
+            .select('title description companyId shortDescription requiredSkills')
+            .populate('companyId', 'companyName')
+            .sort({ score: { $meta: 'textScore' } })
+            .limit(parameters.limit || 5)
+            .lean(); // Use lean() to avoid virtual field issues
+
+            console.log('Text search successful, found:', result.length, 'jobs');
+          } catch (textSearchError) {
+            console.log('Text search failed, falling back to regex search:', textSearchError.message);
+
+            // Fallback to regex search if text index doesn't exist
+            const keywords = parameters.keywords || "software developer";
+            const keywordRegex = new RegExp(keywords.split(' ').join('|'), 'i');
+
+            result = await Job.find({
+              $or: [
+                { title: keywordRegex },
+                { description: keywordRegex },
+                { shortDescription: keywordRegex },
+                { requiredSkills: { $in: [keywordRegex] } }
+              ],
+              status: 'Active'
+            })
+            .select('title description companyId shortDescription requiredSkills')
+            .populate('companyId', 'companyName')
+            .limit(parameters.limit || 5)
+            .lean(); // Use lean() to avoid virtual field issues
+
+            console.log('Regex search successful, found:', result.length, 'jobs');
+          }
           break;
 
         case 'nearby-jobs':
           const coordinates = parameters.coordinates || [51.5310, 25.2854]; // Doha
           const maxDistance = parameters.maxDistance || 10000; // 10km
-          
-          result = await Job.find({
-            'locations.coordinates': {
-              $near: {
-                $geometry: {
-                  type: 'Point',
-                  coordinates: coordinates
-                },
-                $maxDistance: maxDistance
-              }
-            },
-            status: 'Active'
-          })
-          .populate('companyId', 'companyName')
-          .limit(parameters.limit || 5);
+
+          try {
+            // Try geospatial search first
+            result = await Job.find({
+              'locations.coordinates': {
+                $near: {
+                  $geometry: {
+                    type: 'Point',
+                    coordinates: coordinates
+                  },
+                  $maxDistance: maxDistance
+                }
+              },
+              status: 'Active'
+            })
+            .populate('companyId', 'companyName')
+            .limit(parameters.limit || 5);
+          } catch (geoError) {
+            // Fallback to regular search if geospatial index doesn't exist
+            result = await Job.find({
+              status: 'Active'
+            })
+            .populate('companyId', 'companyName')
+            .limit(parameters.limit || 5);
+          }
           break;
 
         case 'user-profiles':

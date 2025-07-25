@@ -7,16 +7,24 @@ async function executeQueryHandler(
   request: NextRequest,
   { params }: { params: Promise<{ queryId: string }> }
 ) {
-  await connectDatabase();
-    
+  try {
+    console.log('=== API Route Handler Started ===');
+
+    await connectDatabase();
+    console.log('Database connected successfully');
+
     const { queryId } = await params;
+    console.log('Query ID:', queryId);
+
     const body = await request.json();
+    console.log('Request body:', body);
+
     const { parameters = {} } = body;
-    
     console.log(`Executing query: ${queryId} with parameters:`, parameters);
-    
+
     const result = await QueryExecutor.executeQuery(queryId, parameters);
-    
+    console.log('Query executed successfully, result:', result);
+
     return NextResponse.json({
       success: true,
       queryId,
@@ -28,6 +36,14 @@ async function executeQueryHandler(
         timestamp: new Date().toISOString()
       }
     });
+  } catch (error) {
+    console.error('=== API Route Handler Error ===');
+    console.error('Error details:', error);
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+
+    // Re-throw the error so the middleware can handle it
+    throw error;
+  }
 }
 
 export const POST = withApiMiddleware(executeQueryHandler);

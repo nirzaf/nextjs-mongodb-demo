@@ -404,6 +404,7 @@ JobSchema.index({
 JobSchema.virtual('daysSincePosted').get(function() {
   const now = new Date();
   const posted = this.postedDate || this.createdAt;
+  if (!posted) return null;
   const diffTime = Math.abs(now.getTime() - posted.getTime());
   return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 });
@@ -412,15 +413,18 @@ JobSchema.virtual('daysSincePosted').get(function() {
 JobSchema.virtual('daysUntilDeadline').get(function() {
   if (!this.applicationDeadline) return null;
   const now = new Date();
-  const diffTime = this.applicationDeadline.getTime() - now.getTime();
+  const deadline = new Date(this.applicationDeadline);
+  if (isNaN(deadline.getTime())) return null;
+  const diffTime = deadline.getTime() - now.getTime();
   return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 });
 
 // Virtual for salary range display
 JobSchema.virtual('salaryDisplay').get(function() {
+  if (!this.salaryRange || !this.salaryRange.min || !this.salaryRange.max) return 'Salary not specified';
   const { min, max, currency, period } = this.salaryRange;
   const periodAbbrev = period === 'Yearly' ? '/year' : period === 'Monthly' ? '/month' : '/hour';
-  return `${currency} ${min.toLocaleString()} - ${max.toLocaleString()} ${periodAbbrev}`;
+  return `${currency || 'USD'} ${min.toLocaleString()} - ${max.toLocaleString()} ${periodAbbrev}`;
 });
 
 // Virtual for primary location
@@ -430,7 +434,7 @@ JobSchema.virtual('primaryLocation').get(function() {
 
 // Virtual for application rate
 JobSchema.virtual('applicationRate').get(function() {
-  if (!this.analytics || !this.analytics.views || this.analytics.views === 0) return 0;
+  if (!this.analytics || !this.analytics.views || this.analytics.views === 0 || !this.analytics.applications) return 0;
   return Math.round((this.analytics.applications / this.analytics.views) * 100);
 });
 
