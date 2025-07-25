@@ -89,12 +89,14 @@ const QueryDetail: React.FC = () => {
 
   const handleExecuteQuery = async () => {
     if (!id) return;
-    
+
     setExecuting(true);
     try {
       // Map the query ID to the actual executable query ID
       const executableQueryId = getExecutableQueryId(id);
       await executeQuery(executableQueryId, parameters);
+      // Switch to results tab after execution
+      setTabValue(2);
     } catch (err) {
       console.error('Failed to execute query:', err);
     } finally {

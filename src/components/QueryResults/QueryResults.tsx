@@ -243,13 +243,13 @@ const QueryResults: React.FC<QueryResultsProps> = ({ result, loading }) => {
             <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
               <Chip
                 icon={<SpeedIcon />}
-                label={`${result.metadata.executionTime}`}
+                label={`${result.metadata.executionTime}ms`}
                 color="primary"
                 variant="outlined"
               />
               <Chip
                 icon={<DataIcon />}
-                label={`${result.metadata.resultCount} results`}
+                label={`${result.metadata.count || 0} results`}
                 color="success"
                 variant="outlined"
               />
@@ -276,8 +276,8 @@ const QueryResults: React.FC<QueryResultsProps> = ({ result, loading }) => {
 
         <Box sx={{ p: 2 }}>
           <TabPanel value={tabValue} index={0}>
-            {Array.isArray(result.data) ? (
-              renderTableView(result.data)
+            {Array.isArray(result.result) ? (
+              renderTableView(result.result)
             ) : (
               <Typography variant="body2" color="text.secondary">
                 Table view is only available for array results.
@@ -286,7 +286,7 @@ const QueryResults: React.FC<QueryResultsProps> = ({ result, loading }) => {
           </TabPanel>
 
           <TabPanel value={tabValue} index={1}>
-            {renderJsonView(result.data)}
+            {renderJsonView(result.result)}
           </TabPanel>
         </Box>
       </Paper>

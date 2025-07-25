@@ -163,6 +163,7 @@ export function QueryProvider({ children }: { children: ReactNode }) {
   };
 
   const executeQuery = async (queryId: string, parameters: any = {}) => {
+    console.log('executeQuery called with:', queryId, parameters);
     dispatch({ type: 'SET_LOADING', payload: true });
     try {
       const response = await fetch(`${API_BASE_URL}/data/execute/${queryId}`, {
@@ -172,16 +173,20 @@ export function QueryProvider({ children }: { children: ReactNode }) {
         },
         body: JSON.stringify({ parameters }),
       });
-      
+
       const result = await response.json();
-      
+      console.log('Query execution response:', result);
+
       if (result.success) {
         dispatch({ type: 'SET_QUERY_RESULT', payload: result });
         dispatch({ type: 'ADD_TO_HISTORY', payload: result });
+        console.log('Query result dispatched successfully');
       } else {
+        console.error('Query execution failed:', result.message);
         dispatch({ type: 'SET_ERROR', payload: result.message || 'Query execution failed' });
       }
     } catch (error) {
+      console.error('Network error during query execution:', error);
       dispatch({ type: 'SET_ERROR', payload: 'Network error: Failed to execute query' });
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false });
