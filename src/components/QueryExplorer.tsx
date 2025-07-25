@@ -43,7 +43,6 @@ const QueryExplorer: React.FC = () => {
   const [categoryFilter, setCategoryFilter] = useState('');
 
   useEffect(() => {
-    console.log('QueryExplorer mounted, calling fetchQueries');
     fetchQueries();
   }, [fetchQueries]);
 

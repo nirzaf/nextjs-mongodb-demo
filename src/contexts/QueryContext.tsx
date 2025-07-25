@@ -89,7 +89,7 @@ function queryReducer(state: QueryState, action: QueryAction): QueryState {
     case 'SET_ERROR':
       return { ...state, error: action.payload, loading: false };
     case 'SET_QUERIES':
-      return { ...state, queries: action.payload };
+      return { ...state, queries: action.payload, loading: false, error: null };
     case 'SET_CURRENT_QUERY':
       return { ...state, currentQuery: action.payload };
     case 'SET_QUERY_RESULT':
