@@ -37,11 +37,11 @@ async function executeCustomQueryHandler(
   { params }: { params: Promise<{ collection: string }> }
 ) {
   await connectDatabase();
-    
+
     const { collection } = await params;
     const body = await request.json();
-    const { query, options = {} } = body;
-    
+    const { query, operation = 'find', options = {} } = body;
+
     // Validate collection
     const ModelClass = COLLECTIONS[collection.toLowerCase() as keyof typeof COLLECTIONS];
     if (!ModelClass) {
@@ -50,12 +50,26 @@ async function executeCustomQueryHandler(
       );
     }
 
-    // Validate query structure
-    if (!query || typeof query !== 'object') {
-      throw commonErrors.badRequest('Query must be a valid MongoDB query object');
+    // Validate operation
+    const allowedOperations = ['find', 'findOne', 'aggregate', 'countDocuments'];
+    if (!allowedOperations.includes(operation)) {
+      throw commonErrors.badRequest(
+        `Operation '${operation}' is not allowed. Allowed operations: ${allowedOperations.join(', ')}`
+      );
     }
 
-    // Check for forbidden operations
+    // Validate query structure
+    if (operation === 'aggregate') {
+      if (!Array.isArray(query)) {
+        throw commonErrors.badRequest('Aggregation query must be an array of pipeline stages');
+      }
+    } else {
+      if (!query || typeof query !== 'object') {
+        throw commonErrors.badRequest('Query must be a valid MongoDB query object');
+      }
+    }
+
+    // Check for forbidden operations in query
     const queryString = JSON.stringify(query);
     const hasForbiddenOp = FORBIDDEN_OPERATIONS.some(op =>
       queryString.includes(op) || queryString.includes(`$${op}`)
@@ -64,49 +78,62 @@ async function executeCustomQueryHandler(
     if (hasForbiddenOp) {
       throw commonErrors.forbidden('Only read operations are allowed');
     }
-    
+
     // Apply safety limits
     const safeOptions = {
       ...options,
       limit: Math.min(options.limit || DEFAULT_LIMIT, MAX_LIMIT)
     };
-    
+
     const startTime = Date.now();
-    
-    // Execute the query
+
+    // Execute the query based on operation
     let result;
-    if (query.aggregate && Array.isArray(query.aggregate)) {
-      // Handle aggregation pipeline
-      result = await ModelClass.aggregate(query.aggregate);
-    } else {
-      // Handle regular find query
-      let mongoQuery = (ModelClass as Model<unknown>).find(query);
-      
-      // Apply options
-      if (safeOptions.select) {
-        mongoQuery = mongoQuery.select(safeOptions.select);
-      }
-      if (safeOptions.populate) {
-        mongoQuery = mongoQuery.populate(safeOptions.populate);
-      }
-      if (safeOptions.sort) {
-        mongoQuery = mongoQuery.sort(safeOptions.sort);
-      }
-      if (safeOptions.limit) {
-        mongoQuery = mongoQuery.limit(safeOptions.limit);
-      }
-      if (safeOptions.skip) {
-        mongoQuery = mongoQuery.skip(safeOptions.skip);
-      }
-      
-      result = await mongoQuery.exec();
+
+    switch (operation) {
+      case 'aggregate':
+        result = await ModelClass.aggregate(query);
+        break;
+
+      case 'findOne':
+        result = await (ModelClass as Model<unknown>).findOne(query).lean();
+        break;
+
+      case 'countDocuments':
+        result = await (ModelClass as Model<unknown>).countDocuments(query);
+        break;
+
+      case 'find':
+      default:
+        let mongoQuery = (ModelClass as Model<unknown>).find(query).lean();
+
+        // Apply options
+        if (safeOptions.select) {
+          mongoQuery = mongoQuery.select(safeOptions.select);
+        }
+        if (safeOptions.populate) {
+          mongoQuery = mongoQuery.populate(safeOptions.populate);
+        }
+        if (safeOptions.sort) {
+          mongoQuery = mongoQuery.sort(safeOptions.sort);
+        }
+        if (safeOptions.limit) {
+          mongoQuery = mongoQuery.limit(safeOptions.limit);
+        }
+        if (safeOptions.skip) {
+          mongoQuery = mongoQuery.skip(safeOptions.skip);
+        }
+
+        result = await mongoQuery.exec();
+        break;
     }
-    
+
     const executionTime = Date.now() - startTime;
-    
+
     return NextResponse.json({
       success: true,
       collection,
+      operation,
       query,
       options: safeOptions,
       result,

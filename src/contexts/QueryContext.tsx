@@ -197,23 +197,35 @@ export function QueryProvider({ children }: { children: ReactNode }) {
   const executeCustomQuery = async (query: any, collection: string, operation: string = 'find') => {
     dispatch({ type: 'SET_LOADING', payload: true });
     try {
-      const response = await fetch(`${API_BASE_URL}/data/execute-custom`, {
+      const response = await fetch(`${API_BASE_URL}/data/execute-custom/${collection}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ query, collection, operation }),
+        body: JSON.stringify({ query, operation }),
       });
-      
+
       const result = await response.json();
-      
+
       if (result.success) {
-        dispatch({ type: 'SET_QUERY_RESULT', payload: result });
-        dispatch({ type: 'ADD_TO_HISTORY', payload: result });
+        // Transform the result to match the expected format
+        const transformedResult = {
+          success: true,
+          data: result.result,
+          metadata: {
+            queryId: `custom-${collection}-${operation}`,
+            executionTime: `${result.metadata.executionTime}ms`,
+            resultCount: result.metadata.count,
+            parameters: { collection, operation, query }
+          }
+        };
+        dispatch({ type: 'SET_QUERY_RESULT', payload: transformedResult });
+        dispatch({ type: 'ADD_TO_HISTORY', payload: transformedResult });
       } else {
         dispatch({ type: 'SET_ERROR', payload: result.message || 'Custom query execution failed' });
       }
     } catch (error) {
+      console.error('Custom query execution error:', error);
       dispatch({ type: 'SET_ERROR', payload: 'Network error: Failed to execute custom query' });
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false });
