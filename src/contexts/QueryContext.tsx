@@ -195,17 +195,27 @@ export function QueryProvider({ children }: { children: ReactNode }) {
   };
 
   const executeCustomQuery = async (query: any, collection: string, operation: string = 'find') => {
+    console.log('executeCustomQuery called with:', { query, collection, operation });
     dispatch({ type: 'SET_LOADING', payload: true });
+    dispatch({ type: 'SET_ERROR', payload: null }); // Clear any previous errors
+
     try {
-      const response = await fetch(`${API_BASE_URL}/data/execute-custom/${collection}`, {
+      const url = `${API_BASE_URL}/data/execute-custom/${collection}`;
+      const body = JSON.stringify({ query, operation });
+      console.log('Making request to:', url);
+      console.log('Request body:', body);
+
+      const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ query, operation }),
+        body: body,
       });
 
+      console.log('Response status:', response.status);
       const result = await response.json();
+      console.log('Response data:', result);
 
       if (result.success) {
         // Transform the result to match the expected format
@@ -219,9 +229,11 @@ export function QueryProvider({ children }: { children: ReactNode }) {
             parameters: { collection, operation, query }
           }
         };
+        console.log('Transformed result:', transformedResult);
         dispatch({ type: 'SET_QUERY_RESULT', payload: transformedResult });
         dispatch({ type: 'ADD_TO_HISTORY', payload: transformedResult });
       } else {
+        console.error('Query execution failed:', result);
         dispatch({ type: 'SET_ERROR', payload: result.message || 'Custom query execution failed' });
       }
     } catch (error) {

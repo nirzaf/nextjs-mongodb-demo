@@ -66,7 +66,7 @@ const CustomQuery: React.FC = () => {
       title: 'Find Active Jobs',
       collection: 'jobs',
       operation: 'find',
-      query: '{\n  "status": "Active",\n  "workArrangement": "Remote"\n}',
+      query: '{\n  "status": "Active"\n}',
     },
     {
       title: 'Count Applications by Status',
@@ -75,16 +75,22 @@ const CustomQuery: React.FC = () => {
       query: '[\n  {\n    "$group": {\n      "_id": "$status",\n      "count": { "$sum": 1 }\n    }\n  },\n  {\n    "$sort": { "count": -1 }\n  }\n]',
     },
     {
-      title: 'Find Senior Developers',
-      collection: 'jobseekerprofiles',
+      title: 'Find Admin Users',
+      collection: 'users',
       operation: 'find',
-      query: '{\n  "experienceLevel": "Senior",\n  "skills.name": { "$in": ["JavaScript", "React"] }\n}',
+      query: '{\n  "role": "Admin"\n}',
     },
     {
       title: 'Technology Companies',
       collection: 'companies',
       operation: 'find',
-      query: '{\n  "industry": "Technology",\n  "isActive": true\n}',
+      query: '{\n  "industry": "Technology"\n}',
+    },
+    {
+      title: 'Count Documents',
+      collection: 'jobs',
+      operation: 'countDocuments',
+      query: '{\n  "status": "Active"\n}',
     },
   ];
 
@@ -93,16 +99,21 @@ const CustomQuery: React.FC = () => {
   };
 
   const handleExecuteQuery = async () => {
+    console.log('handleExecuteQuery called with:', { query, collection, operation });
     setExecuting(true);
     try {
       let parsedQuery;
       try {
         parsedQuery = JSON.parse(query);
+        console.log('Parsed query:', parsedQuery);
       } catch (err) {
+        console.error('JSON parse error:', err);
         throw new Error('Invalid JSON syntax in query');
       }
-      
+
+      console.log('Calling executeCustomQuery with:', { parsedQuery, collection, operation });
       await executeCustomQuery(parsedQuery, collection, operation);
+      console.log('executeCustomQuery completed');
     } catch (err) {
       console.error('Failed to execute custom query:', err);
     } finally {
@@ -245,7 +256,7 @@ const CustomQuery: React.FC = () => {
 
             {tabValue === 1 && (
               <Box sx={{ p: 3 }}>
-                <QueryResults result={queryResult} loading={executing} />
+                <QueryResults result={queryResult} loading={loading || executing} />
               </Box>
             )}
           </Card>
