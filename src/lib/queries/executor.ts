@@ -146,14 +146,16 @@ export class QueryExecutor {
               status: 'Active'
             })
             .populate('companyId', 'companyName')
-            .limit(parameters.limit || 5);
+            .limit(parameters.limit || 5)
+            .lean(); // Use lean() to avoid virtual field issues
           } catch (geoError) {
             // Fallback to regular search if geospatial index doesn't exist
             result = await Job.find({
               status: 'Active'
             })
             .populate('companyId', 'companyName')
-            .limit(parameters.limit || 5);
+            .limit(parameters.limit || 5)
+            .lean(); // Use lean() to avoid virtual field issues
           }
           break;
 
