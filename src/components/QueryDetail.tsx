@@ -34,6 +34,8 @@ import {
   Settings as SettingsIcon,
 } from '@mui/icons-material';
 import Editor from '@monaco-editor/react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { useQuery } from '../contexts/QueryContext';
 import QueryResults from '../components/QueryResults/QueryResults';
 import QueryParameters from '../components/QueryParameters/QueryParameters';
@@ -324,18 +326,76 @@ const QueryDetail: React.FC = () => {
                   <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
                     Detailed Explanation
                   </Typography>
-                  <Typography
-                    variant="body2"
+                  <Paper
                     sx={{
-                      whiteSpace: 'pre-line',
-                      fontFamily: 'monospace',
+                      p: 3,
                       backgroundColor: 'grey.50',
-                      p: 2,
-                      borderRadius: 1,
+                      borderRadius: 2,
+                      '& .markdown-content': {
+                        '& h1, & h2, & h3, & h4, & h5, & h6': {
+                          fontWeight: 600,
+                          marginTop: 2,
+                          marginBottom: 1,
+                          color: 'text.primary',
+                        },
+                        '& h1': { fontSize: '1.5rem' },
+                        '& h2': { fontSize: '1.25rem' },
+                        '& h3': { fontSize: '1.125rem' },
+                        '& p': {
+                          marginBottom: 1.5,
+                          lineHeight: 1.6,
+                          color: 'text.primary',
+                        },
+                        '& ul, & ol': {
+                          paddingLeft: 2,
+                          marginBottom: 1.5,
+                        },
+                        '& li': {
+                          marginBottom: 0.5,
+                          color: 'text.primary',
+                        },
+                        '& code': {
+                          backgroundColor: 'rgba(0, 0, 0, 0.08)',
+                          padding: '2px 6px',
+                          borderRadius: 1,
+                          fontFamily: 'Monaco, Consolas, "Courier New", monospace',
+                          fontSize: '0.875rem',
+                        },
+                        '& pre': {
+                          backgroundColor: 'rgba(0, 0, 0, 0.08)',
+                          padding: 2,
+                          borderRadius: 1,
+                          overflow: 'auto',
+                          marginBottom: 1.5,
+                          '& code': {
+                            backgroundColor: 'transparent',
+                            padding: 0,
+                          },
+                        },
+                        '& blockquote': {
+                          borderLeft: '4px solid',
+                          borderColor: 'primary.main',
+                          paddingLeft: 2,
+                          marginLeft: 0,
+                          marginBottom: 1.5,
+                          fontStyle: 'italic',
+                          color: 'text.secondary',
+                        },
+                        '& strong': {
+                          fontWeight: 600,
+                        },
+                        '& em': {
+                          fontStyle: 'italic',
+                        },
+                      },
                     }}
                   >
-                    {currentQuery.queries[0].explanation}
-                  </Typography>
+                    <Box className="markdown-content">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {currentQuery.queries[0].explanation}
+                      </ReactMarkdown>
+                    </Box>
+                  </Paper>
                 </Box>
               )}
             </TabPanel>
