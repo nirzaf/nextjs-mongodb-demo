@@ -6,6 +6,53 @@ export const QUERY_DEFINITIONS = {
     difficulty: 'Beginner',
     category: 'CRUD Operations',
     estimatedTime: '15 minutes',
+    theory: `## 📚 MongoDB Find Operations Theory
+
+### What is find()?
+The \`find()\` method is MongoDB's primary way to retrieve documents from a collection. It's equivalent to SQL's SELECT statement but much more flexible and powerful.
+
+### Basic Syntax
+\`\`\`javascript
+db.collection.find(query, projection)
+\`\`\`
+
+### Key Concepts
+
+**1. Query Document (Filter)**
+- Empty \`{}\` returns all documents
+- Field-value pairs create AND conditions
+- Supports comparison operators (\`$gt\`, \`$lt\`, \`$gte\`, \`$lte\`, \`$ne\`)
+
+**2. Projection (Field Selection)**
+- \`{ field: 1 }\` includes field
+- \`{ field: 0 }\` excludes field
+- \`_id\` is included by default unless explicitly excluded
+
+**3. Method Chaining**
+- \`sort()\`: Orders results
+- \`limit()\`: Restricts number of results
+- \`skip()\`: Skips specified number of documents
+
+### Performance Tips
+- Create indexes on frequently queried fields
+- Use projection to reduce data transfer
+- Limit results to prevent memory issues
+- Sort by indexed fields when possible
+
+### Common Patterns
+\`\`\`javascript
+// Basic filtering
+db.jobs.find({ status: "Active" })
+
+// Multiple conditions (AND)
+db.jobs.find({ status: "Active", salary: { $gte: 50000 } })
+
+// Field selection
+db.jobs.find({}, { title: 1, company: 1, _id: 0 })
+
+// Sorting and limiting
+db.jobs.find().sort({ postedDate: -1 }).limit(10)
+\`\`\``,
     learningObjectives: [
       'Master basic find() syntax and patterns',
       'Learn efficient field selection with select()',
@@ -78,6 +125,57 @@ Company.find({ isActive: true })
     difficulty: 'Intermediate',
     category: 'Querying',
     estimatedTime: '25 minutes',
+    theory: `## 🎯 Advanced Filtering Theory
+
+### Logical Operators
+MongoDB provides powerful logical operators for complex queries:
+
+**\`$and\`** - All conditions must be true
+\`\`\`javascript
+{ $and: [{ status: "Active" }, { salary: { $gte: 50000 } }] }
+\`\`\`
+
+**\`$or\`** - At least one condition must be true
+\`\`\`javascript
+{ $or: [{ location: "Remote" }, { city: "Doha" }] }
+\`\`\`
+
+**\`$nor\`** - None of the conditions should be true
+\`\`\`javascript
+{ $nor: [{ status: "Closed" }, { expired: true }] }
+\`\`\`
+
+**\`$not\`** - Negates the condition
+\`\`\`javascript
+{ salary: { $not: { $lt: 30000 } } }
+\`\`\`
+
+### Comparison Operators
+- **\`$eq\`**: Equal to (default behavior)
+- **\`$ne\`**: Not equal to
+- **\`$gt\`**: Greater than
+- **\`$gte\`**: Greater than or equal
+- **\`$lt\`**: Less than
+- **\`$lte\`**: Less than or equal
+- **\`$in\`**: Matches any value in array
+- **\`$nin\`**: Doesn't match any value in array
+
+### Array Operators
+- **\`$all\`**: Matches arrays containing all specified elements
+- **\`$elemMatch\`**: Matches documents with array elements meeting criteria
+- **\`$size\`**: Matches arrays of specific length
+
+### Nested Field Queries
+Use dot notation to query nested objects:
+\`\`\`javascript
+{ "address.city": "Doha", "salary.currency": "QAR" }
+\`\`\`
+
+### Performance Considerations
+- Create compound indexes for multi-field queries
+- Place most selective conditions first
+- Use \`$or\` sparingly as it can be expensive
+- Consider using \`$in\` instead of multiple \`$or\` conditions`,
     learningObjectives: [
       'Master logical operators ($or, $and, $nor, $not)',
       'Apply all comparison operators ($gte, $lte, $in, $nin, $ne)',
@@ -207,6 +305,70 @@ Company.find({ isActive: true })
     difficulty: 'Advanced',
     category: 'Analytics',
     estimatedTime: '35 minutes',
+    theory: `## 📊 Aggregation Pipeline Theory
+
+### What is Aggregation?
+The aggregation pipeline is MongoDB's framework for data processing and transformation. Think of it as a series of stages where documents flow through, being filtered, grouped, and transformed at each step.
+
+### Pipeline Concept
+\`\`\`javascript
+db.collection.aggregate([
+  { $stage1: { ... } },
+  { $stage2: { ... } },
+  { $stage3: { ... } }
+])
+\`\`\`
+
+### Core Pipeline Stages
+
+**\`$match\`** - Filters documents (like find())
+\`\`\`javascript
+{ $match: { status: "Active", salary: { $gte: 50000 } } }
+\`\`\`
+
+**\`$group\`** - Groups documents and performs calculations
+\`\`\`javascript
+{ $group: { _id: "$department", avgSalary: { $avg: "$salary" } } }
+\`\`\`
+
+**\`$project\`** - Reshapes documents, adds/removes fields
+\`\`\`javascript
+{ $project: { name: 1, fullName: { $concat: ["$firstName", " ", "$lastName"] } } }
+\`\`\`
+
+**\`$sort\`** - Orders documents
+\`\`\`javascript
+{ $sort: { salary: -1, name: 1 } }
+\`\`\`
+
+**\`$limit\`** - Restricts number of documents
+\`\`\`javascript
+{ $limit: 10 }
+\`\`\`
+
+**\`$lookup\`** - Performs joins with other collections
+\`\`\`javascript
+{ $lookup: { from: "companies", localField: "companyId", foreignField: "_id", as: "company" } }
+\`\`\`
+
+**\`$unwind\`** - Deconstructs arrays into separate documents
+\`\`\`javascript
+{ $unwind: "$skills" }
+\`\`\`
+
+### Aggregation Operators
+- **Arithmetic**: \`$add\`, \`$subtract\`, \`$multiply\`, \`$divide\`
+- **Statistical**: \`$avg\`, \`$sum\`, \`$min\`, \`$max\`, \`$count\`
+- **Conditional**: \`$cond\`, \`$switch\`, \`$ifNull\`
+- **String**: \`$concat\`, \`$substr\`, \`$toUpper\`, \`$toLower\`
+- **Date**: \`$year\`, \`$month\`, \`$dayOfWeek\`, \`$dateToString\`
+
+### Performance Tips
+- Place \`$match\` stages early to reduce data volume
+- Use indexes for \`$match\` and \`$sort\` stages
+- Avoid \`$lookup\` on large collections when possible
+- Use \`$project\` to reduce document size between stages
+- Consider \`allowDiskUse: true\` for large datasets`,
     learningObjectives: [
       'Master the aggregation pipeline concept and stages',
       'Build complex multi-stage data transformations',
@@ -530,6 +692,77 @@ Company.find({ isActive: true })
     difficulty: 'Intermediate',
     category: 'Search',
     estimatedTime: '20 minutes',
+    theory: `## 🔎 Text Search Theory
+
+### What is Text Search?
+MongoDB's text search provides powerful full-text search capabilities similar to search engines. It analyzes text content, removes stop words, stems words, and ranks results by relevance.
+
+### Text Indexes
+Before using text search, you must create a text index:
+
+\`\`\`javascript
+// Single field text index
+db.jobs.createIndex({ title: "text" })
+
+// Compound text index
+db.jobs.createIndex({
+  title: "text",
+  description: "text",
+  skills: "text"
+})
+
+// Weighted text index (prioritize fields)
+db.jobs.createIndex({
+  title: "text",
+  description: "text"
+}, {
+  weights: {
+    title: 10,      // Title matches score 10x higher
+    description: 1  // Description matches score 1x
+  }
+})
+\`\`\`
+
+### Text Search Operators
+
+**\`$text\`** - Performs text search
+\`\`\`javascript
+{ $text: { $search: "javascript developer" } }
+\`\`\`
+
+**\`$search\`** - Specifies search terms
+- **Word search**: \`"javascript react"\` (finds documents with either word)
+- **Phrase search**: \`"\\"senior developer\\""\` (finds exact phrase)
+- **Negation**: \`"javascript -junior"\` (finds javascript but not junior)
+
+**\`$meta\`** - Accesses metadata like text score
+\`\`\`javascript
+.sort({ score: { $meta: "textScore" } })
+\`\`\`
+
+### Search Features
+
+**Stemming**: Automatically matches word variations
+- "develop" matches "developer", "developing", "developed"
+
+**Stop Words**: Ignores common words like "the", "and", "or"
+
+**Case Insensitive**: Searches are automatically case-insensitive
+
+**Language Support**: Supports multiple languages with different stemming rules
+
+### Performance Considerations
+- Text indexes can be large - monitor storage usage
+- Text search is slower than exact matches
+- Use compound queries to combine text search with filters
+- Consider using Atlas Search for advanced features
+
+### Best Practices
+- Create text indexes on fields users will search
+- Use weights to prioritize important fields
+- Combine text search with other filters for better performance
+- Limit results and use pagination
+- Consider using regex for simple pattern matching instead`,
     learningObjectives: [
       'Implement full-text search with $text and $search',
       'Create and optimize text indexes for performance',
@@ -807,6 +1040,113 @@ Job.aggregate([
     difficulty: 'Advanced',
     category: 'Location',
     estimatedTime: '30 minutes',
+    theory: `## 🌍 Geospatial Queries Theory
+
+### What are Geospatial Queries?
+Geospatial queries allow you to work with geographic data - finding locations, calculating distances, and performing spatial analysis. MongoDB uses GeoJSON format and supports complex geographic operations.
+
+### GeoJSON Format
+MongoDB uses GeoJSON to represent geographic data:
+
+\`\`\`javascript
+// Point (longitude, latitude)
+{
+  type: "Point",
+  coordinates: [51.5310, 25.2854]  // [lng, lat] - Doha
+}
+
+// Polygon (area)
+{
+  type: "Polygon",
+  coordinates: [[
+    [51.5, 25.2], [51.6, 25.2],
+    [51.6, 25.3], [51.5, 25.3],
+    [51.5, 25.2]  // Must close the polygon
+  ]]
+}
+\`\`\`
+
+### Geospatial Indexes
+Create 2dsphere indexes for geographic queries:
+
+\`\`\`javascript
+// Single field geospatial index
+db.jobs.createIndex({ location: "2dsphere" })
+
+// Compound index with other fields
+db.jobs.createIndex({ location: "2dsphere", category: 1 })
+\`\`\`
+
+### Core Geospatial Operators
+
+**\`$near\`** - Finds documents near a point
+\`\`\`javascript
+{
+  location: {
+    $near: {
+      $geometry: { type: "Point", coordinates: [51.5, 25.3] },
+      $maxDistance: 5000  // 5km in meters
+    }
+  }
+}
+\`\`\`
+
+**\`$geoWithin\`** - Finds documents within a shape
+\`\`\`javascript
+{
+  location: {
+    $geoWithin: {
+      $geometry: {
+        type: "Polygon",
+        coordinates: [[[lng1,lat1], [lng2,lat2], ...]]
+      }
+    }
+  }
+}
+\`\`\`
+
+**\`$geoIntersects\`** - Finds documents that intersect with a shape
+\`\`\`javascript
+{
+  serviceArea: {
+    $geoIntersects: {
+      $geometry: { type: "Point", coordinates: [51.5, 25.3] }
+    }
+  }
+}
+\`\`\`
+
+### Aggregation Stage: \`$geoNear\`
+Most powerful geospatial operation - must be first stage:
+
+\`\`\`javascript
+{
+  $geoNear: {
+    near: { type: "Point", coordinates: [51.5, 25.3] },
+    distanceField: "distance",
+    maxDistance: 10000,
+    spherical: true
+  }
+}
+\`\`\`
+
+### Distance Calculations
+- **Spherical**: Uses Earth's curvature (more accurate)
+- **Planar**: Flat surface calculations (faster, less accurate)
+- **Units**: Meters for spherical, coordinate units for planar
+
+### Performance Tips
+- Always create 2dsphere indexes on queried fields
+- Use \`$geoNear\` as the first aggregation stage
+- Limit search radius to improve performance
+- Consider using bounding box queries for rectangular areas
+- Store frequently used polygons in separate collections
+
+### Common Use Cases
+- **Proximity Search**: Find nearby restaurants, jobs, services
+- **Geofencing**: Detect when users enter/exit areas
+- **Route Planning**: Calculate distances and optimal paths
+- **Spatial Analysis**: Analyze geographic patterns and trends`,
     learningObjectives: [
       'Master 2dsphere indexes and GeoJSON format',
       'Implement proximity searches with $near and $nearSphere',
@@ -1188,6 +1528,124 @@ Job.aggregate([
     difficulty: 'Intermediate',
     category: 'Schema Design',
     estimatedTime: '25 minutes',
+    theory: `## 🏗️ Data Modeling Theory
+
+### Document-Oriented Design
+Unlike relational databases, MongoDB stores data in flexible documents. This allows for rich, nested structures that can represent complex relationships naturally.
+
+### Key Design Principles
+
+**1. Model for Your Application**
+- Design schemas based on how your application queries data
+- Consider read/write patterns and frequency
+- Optimize for the most common operations
+
+**2. Embed vs Reference Decision Tree**
+
+**Embed When:**
+- Data is accessed together frequently
+- Child documents are small and bounded
+- Data doesn't change often
+- You need atomic updates
+
+**Reference When:**
+- Data is large or unbounded
+- Data is accessed independently
+- Many-to-many relationships exist
+- Data changes frequently
+
+### Relationship Patterns
+
+**One-to-One**: Embed or reference based on access patterns
+\`\`\`javascript
+// Embedded
+{ _id: 1, name: "John", profile: { bio: "...", avatar: "..." } }
+
+// Referenced
+{ _id: 1, name: "John", profileId: ObjectId("...") }
+\`\`\`
+
+**One-to-Many**:
+- **Few**: Embed in parent
+- **Many**: Reference from child
+- **Millions**: Reference from parent
+
+\`\`\`javascript
+// Embed (few comments)
+{ _id: 1, title: "Post", comments: [{ text: "Great!" }] }
+
+// Reference (many comments)
+{ _id: 1, title: "Post" }
+{ _id: 2, postId: 1, text: "Great!" }
+\`\`\`
+
+**Many-to-Many**: Usually requires references
+\`\`\`javascript
+// Users and Skills
+{ _id: 1, name: "John", skillIds: [ObjectId("..."), ObjectId("...")] }
+{ _id: 2, name: "JavaScript", userIds: [ObjectId("..."), ObjectId("...")] }
+\`\`\`
+
+### Schema Design Patterns
+
+**1. Attribute Pattern**: Store similar fields in sub-documents
+\`\`\`javascript
+{
+  name: "Product",
+  attributes: [
+    { k: "color", v: "red" },
+    { k: "size", v: "large" }
+  ]
+}
+\`\`\`
+
+**2. Bucket Pattern**: Group time-series data
+\`\`\`javascript
+{
+  sensor: "A001",
+  date: "2024-01-01",
+  measurements: [
+    { time: "00:00", temp: 20 },
+    { time: "00:01", temp: 21 }
+  ]
+}
+\`\`\`
+
+**3. Polymorphic Pattern**: Different document types in same collection
+\`\`\`javascript
+{ type: "user", name: "John", email: "..." }
+{ type: "company", name: "Acme", industry: "..." }
+\`\`\`
+
+### Schema Validation
+MongoDB supports JSON Schema validation:
+
+\`\`\`javascript
+db.createCollection("users", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["name", "email"],
+      properties: {
+        name: { bsonType: "string" },
+        email: { bsonType: "string", pattern: "^.+@.+$" }
+      }
+    }
+  }
+})
+\`\`\`
+
+### Performance Considerations
+- **Document Size**: 16MB limit per document
+- **Indexes**: Create indexes on frequently queried fields
+- **Atomic Operations**: Embedded data can be updated atomically
+- **Joins**: \`$lookup\` is expensive - minimize when possible
+
+### Anti-Patterns to Avoid
+- **Massive Arrays**: Unbounded arrays can cause performance issues
+- **Deep Nesting**: More than 3-4 levels becomes hard to query
+- **Frequent Schema Changes**: Plan schema evolution carefully
+- **Ignoring Access Patterns**: Don't just copy relational designs`,
     learningObjectives: [
       'Understand document-oriented data modeling',
       'Design efficient schemas for different use cases',
@@ -1315,6 +1773,137 @@ Application.find({ userId: { $in: userIdsWithJavaScript } })
     difficulty: 'Advanced',
     category: 'Performance',
     estimatedTime: '40 minutes',
+    theory: `## ⚡ Performance Optimization Theory
+
+### Understanding MongoDB Performance
+Performance optimization in MongoDB involves understanding how queries execute, how indexes work, and how to design efficient data access patterns.
+
+### Index Fundamentals
+
+**What are Indexes?**
+Indexes are data structures that improve query performance by creating shortcuts to documents. Without indexes, MongoDB must scan every document (collection scan).
+
+**Index Types:**
+- **Single Field**: \`{ name: 1 }\` (1 = ascending, -1 = descending)
+- **Compound**: \`{ status: 1, date: -1, priority: 1 }\`
+- **Multikey**: Automatically created for array fields
+- **Text**: For full-text search
+- **2dsphere**: For geospatial queries
+- **Hashed**: For sharding
+- **Partial**: Only indexes documents matching a condition
+
+### Compound Index Strategy
+
+**ESR Rule (Equality, Sort, Range)**
+Order compound index fields by:
+1. **Equality** matches first
+2. **Sort** fields second
+3. **Range** queries last
+
+\`\`\`javascript
+// Query: { status: "Active", salary: { $gte: 50000 } }
+// Sort: { postedDate: -1 }
+// Optimal index: { status: 1, postedDate: -1, salary: 1 }
+\`\`\`
+
+**Index Prefixes**
+Compound indexes can support queries on prefixes:
+\`\`\`javascript
+// Index: { a: 1, b: 1, c: 1 }
+// Supports: {a}, {a,b}, {a,b,c}
+// Doesn't support: {b}, {c}, {b,c}
+\`\`\`
+
+### Query Analysis with explain()
+
+**Execution Stats**
+\`\`\`javascript
+db.collection.find({...}).explain("executionStats")
+\`\`\`
+
+**Key Metrics:**
+- **totalDocsExamined**: Documents scanned
+- **totalDocsReturned**: Documents returned
+- **executionTimeMillis**: Query execution time
+- **indexesUsed**: Which indexes were used
+- **stage**: IXSCAN (good) vs COLLSCAN (bad)
+
+**Ideal Ratio**: totalDocsExamined ≈ totalDocsReturned
+
+### Aggregation Pipeline Optimization
+
+**Stage Order Matters**
+1. **\`$match\`** early to reduce data volume
+2. **\`$project\`** to reduce document size
+3. **\`$sort\`** with indexed fields
+4. **\`$limit\`** to reduce processing
+
+**Pipeline Optimization Rules**
+- MongoDB automatically reorders some stages
+- \`$match\` moves before \`$project\` when possible
+- \`$sort\` + \`$limit\` can use top-k optimization
+
+### Memory and Resource Management
+
+**Working Set**
+- Keep frequently accessed data in RAM
+- Monitor memory usage with db.stats()
+- Use projection to reduce data transfer
+
+**Connection Pooling**
+- Reuse database connections
+- Configure appropriate pool sizes
+- Monitor connection metrics
+
+### Performance Anti-Patterns
+
+**1. Missing Indexes**
+- Every query should use an index
+- Avoid collection scans on large collections
+
+**2. Inefficient Regex**
+- Use anchored regex: \`/^pattern/\` not \`/pattern/\`
+- Consider text indexes for complex text search
+
+**3. Large Skip Values**
+- \`skip(10000)\` is expensive
+- Use cursor-based pagination instead
+
+**4. Unbounded Queries**
+- Always use \`limit()\` for user-facing queries
+- Implement pagination for large result sets
+
+**5. Wrong Index Order**
+- Follow ESR rule for compound indexes
+- Consider query selectivity
+
+### Monitoring and Profiling
+
+**Database Profiler**
+\`\`\`javascript
+// Enable profiling for slow queries (>100ms)
+db.setProfilingLevel(1, { slowms: 100 })
+
+// View slow queries
+db.system.profile.find().sort({ ts: -1 }).limit(5)
+\`\`\`
+
+**Key Metrics to Monitor**
+- Query execution time
+- Index hit ratio
+- Memory usage
+- Connection count
+- Lock percentage
+
+### Best Practices
+1. **Create indexes for all query patterns**
+2. **Use compound indexes strategically**
+3. **Monitor query performance regularly**
+4. **Use projection to limit returned data**
+5. **Implement proper pagination**
+6. **Consider read preferences for scaling**
+7. **Use aggregation pipeline optimization**
+8. **Regular index maintenance and analysis**`,
     learningObjectives: [
       'Design optimal index strategies for different query patterns',
       'Use explain() to analyze query performance',

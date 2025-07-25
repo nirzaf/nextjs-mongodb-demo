@@ -87,6 +87,49 @@ const QueryResults: React.FC<QueryResultsProps> = ({ result, loading }) => {
     return String(value);
   };
 
+  // Utility function to determine if data is suitable for table display
+  const isTableDisplayable = (data: any): boolean => {
+    if (!data) return false;
+
+    // Must be an array
+    if (!Array.isArray(data)) return false;
+
+    // Empty arrays can't be displayed as tables
+    if (data.length === 0) return false;
+
+    // Check if all items are objects with similar structure
+    const firstItem = data[0];
+    if (typeof firstItem !== 'object' || firstItem === null) return false;
+
+    // Check if it's a complex nested structure that's better shown as JSON
+    const hasComplexNesting = data.some(item => {
+      return Object.values(item).some(value => {
+        if (Array.isArray(value) && value.length > 0) {
+          // Arrays of objects are complex
+          return typeof value[0] === 'object';
+        }
+        if (typeof value === 'object' && value !== null) {
+          // Deep nested objects are complex
+          return Object.keys(value).length > 3;
+        }
+        return false;
+      });
+    });
+
+    if (hasComplexNesting) return false;
+
+    // Check if items have reasonably consistent structure
+    const firstKeys = Object.keys(firstItem);
+    const hasConsistentStructure = data.every(item => {
+      const itemKeys = Object.keys(item);
+      // Allow some variation but require at least 50% key overlap
+      const overlap = firstKeys.filter(key => itemKeys.includes(key)).length;
+      return overlap >= Math.min(firstKeys.length * 0.5, 3);
+    });
+
+    return hasConsistentStructure;
+  };
+
   const renderTableView = (data: any[]) => {
     if (!data || data.length === 0) {
       return (
@@ -267,28 +310,40 @@ const QueryResults: React.FC<QueryResultsProps> = ({ result, loading }) => {
 
       {/* Results */}
       <Paper>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <Tabs value={tabValue} onChange={handleTabChange}>
-            <Tab icon={<TableIcon />} label="Table View" />
-            <Tab icon={<CodeIcon />} label="JSON View" />
-          </Tabs>
-        </Box>
+        {isTableDisplayable(result.data) ? (
+          <>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+              <Tabs value={tabValue} onChange={handleTabChange}>
+                <Tab icon={<TableIcon />} label="Table View" />
+                <Tab icon={<CodeIcon />} label="JSON View" />
+              </Tabs>
+            </Box>
 
-        <Box sx={{ p: 2 }}>
-          <TabPanel value={tabValue} index={0}>
-            {Array.isArray(result.data) ? (
-              renderTableView(result.data)
-            ) : (
-              <Typography variant="body2" color="text.secondary">
-                Table view is only available for array results.
-              </Typography>
-            )}
-          </TabPanel>
+            <Box sx={{ p: 2 }}>
+              <TabPanel value={tabValue} index={0}>
+                {renderTableView(result.data)}
+              </TabPanel>
 
-          <TabPanel value={tabValue} index={1}>
-            {renderJsonView(result.data)}
-          </TabPanel>
-        </Box>
+              <TabPanel value={tabValue} index={1}>
+                {renderJsonView(result.data)}
+              </TabPanel>
+            </Box>
+          </>
+        ) : (
+          <>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+              <Tabs value={0} onChange={() => {}}>
+                <Tab icon={<CodeIcon />} label="JSON View" />
+              </Tabs>
+            </Box>
+
+            <Box sx={{ p: 2 }}>
+              <TabPanel value={0} index={0}>
+                {renderJsonView(result.data)}
+              </TabPanel>
+            </Box>
+          </>
+        )}
       </Paper>
     </Box>
   );

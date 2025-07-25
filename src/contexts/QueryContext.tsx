@@ -21,6 +21,7 @@ export interface QueryDefinition {
   description: string;
   difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
   category: string;
+  theory?: string;
   learningObjectives: string[];
   businessScenario: string;
   mongodbConcepts: string[];

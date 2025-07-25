@@ -223,6 +223,82 @@ const QueryDetail: React.FC = () => {
             </CardContent>
           </Card>
 
+          {/* Theory Section */}
+          {currentQuery.theory && (
+            <Card sx={{ height: 'fit-content', mb: 3 }}>
+              <CardContent>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                  <SchoolIcon sx={{ mr: 1, color: 'primary.main' }} />
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    Theory & Concepts
+                  </Typography>
+                </Box>
+                <Paper
+                  sx={{
+                    p: 3,
+                    backgroundColor: 'grey.50',
+                    borderRadius: 2,
+                    maxHeight: '400px',
+                    overflow: 'auto',
+                    '& h1, & h2, & h3, & h4, & h5, & h6': {
+                      fontWeight: 600,
+                      marginTop: 2,
+                      marginBottom: 1,
+                      color: 'text.primary',
+                    },
+                    '& h2': {
+                      fontSize: '1.25rem',
+                      borderBottom: '2px solid',
+                      borderColor: 'primary.main',
+                      paddingBottom: 0.5,
+                      marginBottom: 2,
+                    },
+                    '& h3': {
+                      fontSize: '1.1rem',
+                      color: 'primary.dark',
+                    },
+                    '& p': {
+                      marginBottom: 1.5,
+                      lineHeight: 1.6,
+                    },
+                    '& code': {
+                      backgroundColor: 'rgba(0,0,0,0.1)',
+                      padding: '2px 4px',
+                      borderRadius: 1,
+                      fontSize: '0.875rem',
+                      fontFamily: 'monospace',
+                    },
+                    '& pre': {
+                      backgroundColor: 'rgba(0,0,0,0.05)',
+                      padding: 2,
+                      borderRadius: 1,
+                      overflow: 'auto',
+                      fontSize: '0.875rem',
+                      fontFamily: 'monospace',
+                      border: '1px solid',
+                      borderColor: 'divider',
+                    },
+                    '& ul, & ol': {
+                      paddingLeft: 3,
+                      marginBottom: 1.5,
+                    },
+                    '& li': {
+                      marginBottom: 0.5,
+                    },
+                    '& strong': {
+                      fontWeight: 600,
+                      color: 'text.primary',
+                    },
+                  }}
+                >
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {currentQuery.theory}
+                  </ReactMarkdown>
+                </Paper>
+              </CardContent>
+            </Card>
+          )}
+
           <Card sx={{ height: 'fit-content' }}>
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
