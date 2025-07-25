@@ -96,8 +96,6 @@ export class QueryExecutor {
 
         case 'text-search-jobs':
           try {
-            console.log('Attempting text search with keywords:', parameters.keywords || "software developer");
-
             // Try text search first
             result = await Job.find({
               $text: { $search: parameters.keywords || "software developer" },
@@ -108,11 +106,7 @@ export class QueryExecutor {
             .sort({ score: { $meta: 'textScore' } })
             .limit(parameters.limit || 5)
             .lean(); // Use lean() to avoid virtual field issues
-
-            console.log('Text search successful, found:', result.length, 'jobs');
           } catch (textSearchError) {
-            console.log('Text search failed, falling back to regex search:', textSearchError.message);
-
             // Fallback to regex search if text index doesn't exist
             const keywords = parameters.keywords || "software developer";
             const keywordRegex = new RegExp(keywords.split(' ').join('|'), 'i');
@@ -130,8 +124,6 @@ export class QueryExecutor {
             .populate('companyId', 'companyName')
             .limit(parameters.limit || 5)
             .lean(); // Use lean() to avoid virtual field issues
-
-            console.log('Regex search successful, found:', result.length, 'jobs');
           }
           break;
 
