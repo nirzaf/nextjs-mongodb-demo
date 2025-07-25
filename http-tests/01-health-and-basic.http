@@ -1,0 +1,50 @@
+### MongoDB Demo API - Health Check and Basic Endpoints
+### Base URL: http://localhost:3001
+
+### Health Check
+GET http://localhost:3001/health
+Accept: application/json
+
+###
+
+### Get All Available Queries
+GET http://localhost:3001/api/queries
+Accept: application/json
+
+###
+
+### Get Specific Query Details - Basic Find
+GET http://localhost:3001/api/queries/basic-find
+Accept: application/json
+
+###
+
+### Get Specific Query Details - Advanced Filtering
+GET http://localhost:3001/api/queries/advanced-filtering
+Accept: application/json
+
+###
+
+### Get Specific Query Details - Aggregation
+GET http://localhost:3001/api/queries/aggregation
+Accept: application/json
+
+###
+
+### Get Specific Query Details - Text Search
+GET http://localhost:3001/api/queries/text-search
+Accept: application/json
+
+###
+
+### Get Specific Query Details - Geospatial
+GET http://localhost:3001/api/queries/geospatial
+Accept: application/json
+
+###
+
+### Get Database Statistics
+GET http://localhost:3001/api/data/stats
+Accept: application/json
+
+###

@@ -1,0 +1,93 @@
+### MongoDB Demo API - Analytics and Aggregation Queries
+### Base URL: http://localhost:3001
+
+### Application Status Distribution
+POST http://localhost:3001/api/data/execute/application-status-distribution
+Content-Type: application/json
+
+{}
+
+###
+
+### Salary Analysis (Default Parameters)
+POST http://localhost:3001/api/data/execute/salary-analysis
+Content-Type: application/json
+
+{}
+
+###
+
+### Salary Analysis (QAR Currency)
+POST http://localhost:3001/api/data/execute/salary-analysis
+Content-Type: application/json
+
+{
+  "parameters": {
+    "currency": "QAR",
+    "limit": 15
+  }
+}
+
+###
+
+### Salary Analysis (USD Currency)
+POST http://localhost:3001/api/data/execute/salary-analysis
+Content-Type: application/json
+
+{
+  "parameters": {
+    "currency": "USD",
+    "limit": 10
+  }
+}
+
+###
+
+### Skills Demand Analysis (Default)
+POST http://localhost:3001/api/data/execute/skills-demand
+Content-Type: application/json
+
+{}
+
+###
+
+### Skills Demand Analysis (Top 15)
+POST http://localhost:3001/api/data/execute/skills-demand
+Content-Type: application/json
+
+{
+  "parameters": {
+    "limit": 15
+  }
+}
+
+###
+
+### Hiring Funnel Analysis
+POST http://localhost:3001/api/data/execute/hiring-funnel
+Content-Type: application/json
+
+{}
+
+###
+
+### Company Growth Analysis (Default)
+POST http://localhost:3001/api/data/execute/company-growth-analysis
+Content-Type: application/json
+
+{}
+
+###
+
+### Company Growth Analysis (Custom Parameters)
+POST http://localhost:3001/api/data/execute/company-growth-analysis
+Content-Type: application/json
+
+{
+  "parameters": {
+    "minEmployees": 100,
+    "limit": 8
+  }
+}
+
+###

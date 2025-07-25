@@ -1,0 +1,355 @@
+{
+  "info": {
+    "name": "MongoDB Demo API",
+    "description": "Comprehensive test collection for MongoDB Demo API endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3001",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health & Basic",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            }
+          }
+        },
+        {
+          "name": "Get All Queries",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/queries",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "queries"]
+            }
+          }
+        },
+        {
+          "name": "Get Database Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/data/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "data", "stats"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Basic Queries",
+      "item": [
+        {
+          "name": "Basic Find Companies",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"parameters\": {\n    \"industry\": \"Technology\",\n    \"limit\": 5\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/data/execute/basic-find-companies",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "data", "execute", "basic-find-companies"]
+            }
+          }
+        },
+        {
+          "name": "Basic Find Job Seekers",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"parameters\": {\n    \"experienceLevel\": \"Senior\",\n    \"limit\": 5\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/data/execute/basic-find-jobseekers",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "data", "execute", "basic-find-jobseekers"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Advanced Queries",
+      "item": [
+        {
+          "name": "Advanced Job Search",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"parameters\": {\n    \"city\": \"Doha\",\n    \"workArrangement\": \"Remote\",\n    \"minSalary\": 15000,\n    \"currency\": \"QAR\",\n    \"limit\": 5\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/data/execute/advanced-job-search",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "data", "execute", "advanced-job-search"]
+            }
+          }
+        },
+        {
+          "name": "Skills Search",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"parameters\": {\n    \"skills\": [\"JavaScript\", \"React\", \"Node.js\"],\n    \"limit\": 5\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/data/execute/skills-search",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "data", "execute", "skills-search"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Analytics Queries",
+      "item": [
+        {
+          "name": "Application Status Distribution",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/data/execute/application-status-distribution",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "data", "execute", "application-status-distribution"]
+            }
+          }
+        },
+        {
+          "name": "Salary Analysis",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"parameters\": {\n    \"currency\": \"QAR\",\n    \"limit\": 10\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/data/execute/salary-analysis",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "data", "execute", "salary-analysis"]
+            }
+          }
+        },
+        {
+          "name": "Skills Demand",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"parameters\": {\n    \"limit\": 10\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/data/execute/skills-demand",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "data", "execute", "skills-demand"]
+            }
+          }
+        },
+        {
+          "name": "Hiring Funnel",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/data/execute/hiring-funnel",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "data", "execute", "hiring-funnel"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Search Queries",
+      "item": [
+        {
+          "name": "Text Search Jobs",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"parameters\": {\n    \"searchText\": \"software developer\",\n    \"limit\": 5\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/data/execute/text-search-jobs",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "data", "execute", "text-search-jobs"]
+            }
+          }
+        },
+        {
+          "name": "Text Search Candidates",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"parameters\": {\n    \"searchText\": \"react javascript\",\n    \"limit\": 3\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/data/execute/text-search-candidates",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "data", "execute", "text-search-candidates"]
+            }
+          }
+        },
+        {
+          "name": "Nearby Jobs",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"parameters\": {\n    \"coordinates\": [51.5310, 25.2854],\n    \"maxDistance\": 10000,\n    \"limit\": 5\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/data/execute/nearby-jobs",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "data", "execute", "nearby-jobs"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Custom Queries",
+      "item": [
+        {
+          "name": "Find All Users",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"collection\": \"users\",\n  \"operation\": \"find\",\n  \"query\": {}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/data/execute-custom",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "data", "execute-custom"]
+            }
+          }
+        },
+        {
+          "name": "Count Active Companies",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"collection\": \"companies\",\n  \"operation\": \"countDocuments\",\n  \"query\": {\n    \"isActive\": true\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/data/execute-custom",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "data", "execute-custom"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

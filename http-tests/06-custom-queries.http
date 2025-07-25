@@ -1,0 +1,134 @@
+### MongoDB Demo API - Custom Query Execution
+### Base URL: http://localhost:3001
+
+### Custom Query - Find All Users
+POST http://localhost:3001/api/data/execute-custom
+Content-Type: application/json
+
+{
+  "collection": "users",
+  "operation": "find",
+  "query": {}
+}
+
+###
+
+### Custom Query - Find Active Companies
+POST http://localhost:3001/api/data/execute-custom
+Content-Type: application/json
+
+{
+  "collection": "companies",
+  "operation": "find",
+  "query": {
+    "isActive": true
+  }
+}
+
+###
+
+### Custom Query - Count Technology Companies
+POST http://localhost:3001/api/data/execute-custom
+Content-Type: application/json
+
+{
+  "collection": "companies",
+  "operation": "countDocuments",
+  "query": {
+    "industry": "Technology"
+  }
+}
+
+###
+
+### Custom Query - Find One Job Seeker Profile
+POST http://localhost:3001/api/data/execute-custom
+Content-Type: application/json
+
+{
+  "collection": "jobseekerprofiles",
+  "operation": "findOne",
+  "query": {
+    "isPublic": true
+  }
+}
+
+###
+
+### Custom Query - Find Senior Level Job Seekers
+POST http://localhost:3001/api/data/execute-custom
+Content-Type: application/json
+
+{
+  "collection": "jobseekerprofiles",
+  "operation": "find",
+  "query": {
+    "experienceLevel": "Senior",
+    "isPublic": true
+  }
+}
+
+###
+
+### Custom Query - Find Active Jobs with High Salary
+POST http://localhost:3001/api/data/execute-custom
+Content-Type: application/json
+
+{
+  "collection": "jobs",
+  "operation": "find",
+  "query": {
+    "status": "Active",
+    "salaryRange.min": { "$gte": 20000 }
+  }
+}
+
+###
+
+### Custom Query - Count Applications by Status
+POST http://localhost:3001/api/data/execute-custom
+Content-Type: application/json
+
+{
+  "collection": "applications",
+  "operation": "aggregate",
+  "query": [
+    {
+      "$group": {
+        "_id": "$status",
+        "count": { "$sum": 1 }
+      }
+    },
+    {
+      "$sort": { "count": -1 }
+    }
+  ]
+}
+
+###
+
+### Custom Query - Find Employer Profiles
+POST http://localhost:3001/api/data/execute-custom
+Content-Type: application/json
+
+{
+  "collection": "employerprofiles",
+  "operation": "find",
+  "query": {
+    "isActive": true
+  }
+}
+
+###
+
+### Custom Query - Count Total Applications
+POST http://localhost:3001/api/data/execute-custom
+Content-Type: application/json
+
+{
+  "collection": "applications",
+  "operation": "countDocuments",
+  "query": {}
+}
+
+###

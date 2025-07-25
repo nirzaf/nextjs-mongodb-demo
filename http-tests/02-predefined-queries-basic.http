@@ -1,0 +1,70 @@
+### MongoDB Demo API - Basic Predefined Queries
+### Base URL: http://localhost:3001
+
+### Basic Find Companies (Default Parameters)
+POST http://localhost:3001/api/data/execute/basic-find-companies
+Content-Type: application/json
+
+{}
+
+###
+
+### Basic Find Companies (With Parameters)
+POST http://localhost:3001/api/data/execute/basic-find-companies
+Content-Type: application/json
+
+{
+  "parameters": {
+    "industry": "Technology",
+    "limit": 10
+  }
+}
+
+###
+
+### Basic Find Companies (Healthcare Industry)
+POST http://localhost:3001/api/data/execute/basic-find-companies
+Content-Type: application/json
+
+{
+  "parameters": {
+    "industry": "Healthcare",
+    "limit": 5
+  }
+}
+
+###
+
+### Basic Find Job Seekers (Default Parameters)
+POST http://localhost:3001/api/data/execute/basic-find-jobseekers
+Content-Type: application/json
+
+{}
+
+###
+
+### Basic Find Job Seekers (With Parameters)
+POST http://localhost:3001/api/data/execute/basic-find-jobseekers
+Content-Type: application/json
+
+{
+  "parameters": {
+    "experienceLevel": "Senior",
+    "limit": 8
+  }
+}
+
+###
+
+### Basic Find Job Seekers (Entry Level)
+POST http://localhost:3001/api/data/execute/basic-find-jobseekers
+Content-Type: application/json
+
+{
+  "parameters": {
+    "experienceLevel": "Entry",
+    "limit": 5
+  }
+}
+
+###

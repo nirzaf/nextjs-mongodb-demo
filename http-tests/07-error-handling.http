@@ -1,0 +1,112 @@
+### MongoDB Demo API - Error Handling and Edge Cases
+### Base URL: http://localhost:3001
+
+### Test 404 - Non-existent Route
+GET http://localhost:3001/api/nonexistent
+Accept: application/json
+
+###
+
+### Test 404 - Non-existent Query ID
+GET http://localhost:3001/api/queries/nonexistent-query
+Accept: application/json
+
+###
+
+### Test 404 - Non-existent Predefined Query Execution
+POST http://localhost:3001/api/data/execute/nonexistent-query
+Content-Type: application/json
+
+{}
+
+###
+
+### Test 400 - Custom Query Missing Collection
+POST http://localhost:3001/api/data/execute-custom
+Content-Type: application/json
+
+{
+  "operation": "find",
+  "query": {}
+}
+
+###
+
+### Test 400 - Custom Query Missing Query
+POST http://localhost:3001/api/data/execute-custom
+Content-Type: application/json
+
+{
+  "collection": "users",
+  "operation": "find"
+}
+
+###
+
+### Test 400 - Invalid Collection Name
+POST http://localhost:3001/api/data/execute-custom
+Content-Type: application/json
+
+{
+  "collection": "invalidcollection",
+  "operation": "find",
+  "query": {}
+}
+
+###
+
+### Test 403 - Forbidden Operation (Insert)
+POST http://localhost:3001/api/data/execute-custom
+Content-Type: application/json
+
+{
+  "collection": "users",
+  "operation": "insertOne",
+  "query": {
+    "name": "Test User"
+  }
+}
+
+###
+
+### Test 403 - Forbidden Operation (Update)
+POST http://localhost:3001/api/data/execute-custom
+Content-Type: application/json
+
+{
+  "collection": "users",
+  "operation": "updateOne",
+  "query": {
+    "filter": { "_id": "someId" },
+    "update": { "$set": { "name": "Updated Name" } }
+  }
+}
+
+###
+
+### Test 403 - Forbidden Operation (Delete)
+POST http://localhost:3001/api/data/execute-custom
+Content-Type: application/json
+
+{
+  "collection": "users",
+  "operation": "deleteOne",
+  "query": {
+    "_id": "someId"
+  }
+}
+
+###
+
+### Test Invalid JSON Body
+POST http://localhost:3001/api/data/execute/basic-find-companies
+Content-Type: application/json
+
+{
+  "parameters": {
+    "industry": "Technology",
+    "limit": "invalid_number"
+  }
+}
+
+###

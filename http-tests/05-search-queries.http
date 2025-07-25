@@ -1,0 +1,106 @@
+### MongoDB Demo API - Text Search and Geospatial Queries
+### Base URL: http://localhost:3001
+
+### Text Search Jobs (Default)
+POST http://localhost:3001/api/data/execute/text-search-jobs
+Content-Type: application/json
+
+{}
+
+###
+
+### Text Search Jobs (Custom Search)
+POST http://localhost:3001/api/data/execute/text-search-jobs
+Content-Type: application/json
+
+{
+  "parameters": {
+    "searchText": "python machine learning",
+    "limit": 8
+  }
+}
+
+###
+
+### Text Search Jobs (Frontend Keywords)
+POST http://localhost:3001/api/data/execute/text-search-jobs
+Content-Type: application/json
+
+{
+  "parameters": {
+    "searchText": "react typescript frontend",
+    "limit": 5
+  }
+}
+
+###
+
+### Text Search Candidates (Default)
+POST http://localhost:3001/api/data/execute/text-search-candidates
+Content-Type: application/json
+
+{}
+
+###
+
+### Text Search Candidates (Backend Skills)
+POST http://localhost:3001/api/data/execute/text-search-candidates
+Content-Type: application/json
+
+{
+  "parameters": {
+    "searchText": "node.js express mongodb",
+    "limit": 5
+  }
+}
+
+###
+
+### Text Search Candidates (Data Science)
+POST http://localhost:3001/api/data/execute/text-search-candidates
+Content-Type: application/json
+
+{
+  "parameters": {
+    "searchText": "python data science machine learning",
+    "limit": 6
+  }
+}
+
+###
+
+### Nearby Jobs (Default - Doha)
+POST http://localhost:3001/api/data/execute/nearby-jobs
+Content-Type: application/json
+
+{}
+
+###
+
+### Nearby Jobs (Custom Location and Distance)
+POST http://localhost:3001/api/data/execute/nearby-jobs
+Content-Type: application/json
+
+{
+  "parameters": {
+    "coordinates": [55.2708, 25.2048],
+    "maxDistance": 15000,
+    "limit": 8
+  }
+}
+
+###
+
+### Nearby Jobs (Dubai Location)
+POST http://localhost:3001/api/data/execute/nearby-jobs
+Content-Type: application/json
+
+{
+  "parameters": {
+    "coordinates": [55.2744, 25.1972],
+    "maxDistance": 5000,
+    "limit": 10
+  }
+}
+
+###

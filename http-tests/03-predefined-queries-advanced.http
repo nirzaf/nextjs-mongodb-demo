@@ -1,0 +1,76 @@
+### MongoDB Demo API - Advanced Predefined Queries
+### Base URL: http://localhost:3001
+
+### Advanced Job Search (Default Parameters)
+POST http://localhost:3001/api/data/execute/advanced-job-search
+Content-Type: application/json
+
+{}
+
+###
+
+### Advanced Job Search (Custom Parameters)
+POST http://localhost:3001/api/data/execute/advanced-job-search
+Content-Type: application/json
+
+{
+  "parameters": {
+    "city": "Doha",
+    "workArrangement": "Remote",
+    "minSalary": 15000,
+    "currency": "QAR",
+    "limit": 10
+  }
+}
+
+###
+
+### Advanced Job Search (Dubai Location)
+POST http://localhost:3001/api/data/execute/advanced-job-search
+Content-Type: application/json
+
+{
+  "parameters": {
+    "city": "Dubai",
+    "workArrangement": "Hybrid",
+    "minSalary": 20000,
+    "currency": "AED",
+    "limit": 5
+  }
+}
+
+###
+
+### Skills Search (Default Parameters)
+POST http://localhost:3001/api/data/execute/skills-search
+Content-Type: application/json
+
+{}
+
+###
+
+### Skills Search (Custom Skills)
+POST http://localhost:3001/api/data/execute/skills-search
+Content-Type: application/json
+
+{
+  "parameters": {
+    "skills": ["Python", "Django", "PostgreSQL"],
+    "limit": 5
+  }
+}
+
+###
+
+### Skills Search (Frontend Skills)
+POST http://localhost:3001/api/data/execute/skills-search
+Content-Type: application/json
+
+{
+  "parameters": {
+    "skills": ["React", "TypeScript", "Node.js"],
+    "limit": 8
+  }
+}
+
+###
