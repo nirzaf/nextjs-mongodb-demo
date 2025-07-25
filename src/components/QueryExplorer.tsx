@@ -43,8 +43,9 @@ const QueryExplorer: React.FC = () => {
   const [categoryFilter, setCategoryFilter] = useState('');
 
   useEffect(() => {
+    console.log('QueryExplorer mounted, calling fetchQueries');
     fetchQueries();
-  }, []);
+  }, [fetchQueries]);
 
   const filteredQueries = queries.filter(query => {
     const matchesSearch = query.title.toLowerCase().includes(searchTerm.toLowerCase()) ||

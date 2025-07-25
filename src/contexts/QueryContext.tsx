@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useReducer, ReactNode } from 'react';
+import React, { createContext, useContext, useReducer, useCallback, ReactNode } from 'react';
 
 // Types
 export interface QueryResult {
@@ -33,13 +33,23 @@ export interface QueryDefinition {
 }
 
 export interface DatabaseStats {
-  users: number;
-  companies: number;
-  jobSeekers: number;
-  employers: number;
-  jobs: number;
-  applications: number;
-  total: number;
+  users: {
+    total: number;
+    jobSeekers: number;
+    employers: number;
+  };
+  companies: {
+    total: number;
+    active: number;
+  };
+  jobs: {
+    total: number;
+    active: number;
+  };
+  applications: {
+    total: number;
+  };
+  lastUpdated: string;
 }
 
 interface QueryState {
@@ -116,12 +126,12 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api';
 export function QueryProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(queryReducer, initialState);
 
-  const fetchQueries = async () => {
+  const fetchQueries = useCallback(async () => {
     dispatch({ type: 'SET_LOADING', payload: true });
     try {
       const response = await fetch(`${API_BASE_URL}/queries`);
       const data = await response.json();
-      
+
       if (data.success) {
         dispatch({ type: 'SET_QUERIES', payload: data.data });
       } else {
@@ -132,7 +142,7 @@ export function QueryProvider({ children }: { children: ReactNode }) {
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false });
     }
-  };
+  }, []);
 
   const fetchQueryById = async (id: string) => {
     dispatch({ type: 'SET_LOADING', payload: true });
