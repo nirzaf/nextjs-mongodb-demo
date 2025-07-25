@@ -271,6 +271,147 @@ export class QueryExecutor {
           ]);
           break;
 
+        case 'data-modeling':
+          // Return schema examples and patterns for data modeling learning
+          result = {
+            embeddedPattern: {
+              _id: "embedded_example",
+              title: "Embedded Application Schema",
+              description: "Application with embedded user and job data",
+              example: {
+                _id: "app123",
+                status: "Applied",
+                appliedDate: new Date(),
+                user: {
+                  name: "John Doe",
+                  email: "john@example.com",
+                  skills: ["JavaScript", "React", "Node.js"]
+                },
+                job: {
+                  title: "Frontend Developer",
+                  company: "Tech Corp",
+                  salaryRange: { min: 50000, max: 70000, currency: "USD" }
+                }
+              },
+              benefits: ["Single query access", "Atomic updates", "Better performance"],
+              drawbacks: ["Data duplication", "Document size limits", "Update complexity"]
+            },
+            referencedPattern: {
+              _id: "referenced_example",
+              title: "Referenced Application Schema",
+              description: "Application with references to user and job collections",
+              example: {
+                _id: "app456",
+                userId: "user123",
+                jobId: "job789",
+                companyId: "company456",
+                status: "Applied",
+                appliedDate: new Date()
+              },
+              benefits: ["No data duplication", "Easier updates", "Smaller documents"],
+              drawbacks: ["Multiple queries needed", "Complex joins", "Potential inconsistency"]
+            },
+            hybridPattern: {
+              _id: "hybrid_example",
+              title: "Hybrid Application Schema",
+              description: "Application with critical embedded data and references",
+              example: {
+                _id: "app789",
+                userId: "user123",
+                jobId: "job789",
+                status: "Applied",
+                appliedDate: new Date(),
+                snapshot: {
+                  userSkills: ["JavaScript", "React"],
+                  jobTitle: "Frontend Developer",
+                  salaryOffered: 60000
+                }
+              },
+              benefits: ["Best of both worlds", "Performance + consistency", "Historical data preservation"]
+            }
+          };
+          break;
+
+        case 'performance-optimization':
+          // Return performance optimization examples and techniques
+          result = {
+            indexingStrategies: {
+              title: "Database Indexing Strategies",
+              examples: [
+                {
+                  type: "Single Field Index",
+                  query: "db.jobs.createIndex({ status: 1 })",
+                  useCase: "Fast filtering by job status",
+                  performance: "O(log n) lookup time"
+                },
+                {
+                  type: "Compound Index",
+                  query: "db.jobs.createIndex({ status: 1, postedDate: -1 })",
+                  useCase: "Filter by status and sort by date",
+                  performance: "Optimal for combined queries"
+                },
+                {
+                  type: "Text Index",
+                  query: "db.jobs.createIndex({ title: 'text', description: 'text' })",
+                  useCase: "Full-text search capabilities",
+                  performance: "Efficient text search"
+                },
+                {
+                  type: "Geospatial Index",
+                  query: "db.jobs.createIndex({ 'locations.coordinates': '2dsphere' })",
+                  useCase: "Location-based queries",
+                  performance: "Fast proximity searches"
+                }
+              ]
+            },
+            queryOptimization: {
+              title: "Query Optimization Techniques",
+              techniques: [
+                {
+                  name: "Use Projection",
+                  example: "db.jobs.find({}, { title: 1, company: 1 })",
+                  benefit: "Reduces network transfer and memory usage"
+                },
+                {
+                  name: "Limit Results",
+                  example: "db.jobs.find().limit(10)",
+                  benefit: "Prevents loading unnecessary documents"
+                },
+                {
+                  name: "Use Lean Queries",
+                  example: "Job.find().lean()",
+                  benefit: "Returns plain objects, faster processing"
+                },
+                {
+                  name: "Efficient Sorting",
+                  example: "db.jobs.find().sort({ postedDate: -1 }).limit(10)",
+                  benefit: "Index-supported sorting with limits"
+                }
+              ]
+            },
+            aggregationOptimization: {
+              title: "Aggregation Pipeline Optimization",
+              tips: [
+                {
+                  rule: "Match Early",
+                  example: "{ $match: { status: 'Active' } }",
+                  reason: "Filter documents before expensive operations"
+                },
+                {
+                  rule: "Project Late",
+                  example: "{ $project: { title: 1, salary: 1 } }",
+                  reason: "Reduce document size in final stages"
+                },
+                {
+                  rule: "Use Indexes",
+                  example: "{ $match: { indexedField: value } }",
+                  reason: "Leverage existing indexes for performance"
+                }
+              ]
+            }
+          };
+          break;
+
         default:
           throw new Error(`Unknown query ID: ${queryId}`);
       }

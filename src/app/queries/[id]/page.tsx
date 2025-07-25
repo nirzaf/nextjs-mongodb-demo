@@ -18,13 +18,18 @@ export default async function QueryPage({ params }: QueryPageProps) {
  * This enables static generation for better performance
  */
 export async function generateStaticParams() {
-  // Define the available query IDs that match the ones in definitions.ts
+  // Define the available query IDs that match the ones in executor.ts
   const queryIds = [
-    'basic-find',
-    'advanced-filtering', 
-    'aggregation',
-    'text-search',
-    'geospatial',
+    'basic-find-companies',
+    'advanced-job-search',
+    'salary-analysis',
+    'text-search-jobs',
+    'nearby-jobs',
+    'user-profiles',
+    'company-analytics',
+    'application-trends',
+    'job-seeker-skills',
+    'employer-hiring-stats',
     'data-modeling',
     'performance-optimization'
   ];
